@@ -42,10 +42,12 @@ const FAQ = () => {
 
         <div className="space-y-4 max-w-3xl">
           {faqs.map((f) => (
-            <div key={f.id} className="border border-black/10 rounded-lg p-4">
+            <div key={f.id} className="bg-white border border-black/10 rounded-lg p-4 
+             shadow-sm transition-all duration-300 
+             hover:bg-[#E0E2FF]/25 hover:shadow-lg hover:border-primary hover:-translate-y-1">
               <button
                 onClick={() => setOpen(open === f.id ? null : f.id)}
-                className="flex justify-between items-center w-full text-left">
+                className="flex justify-between items-center w-full text-left transition-colors duration-200 hover:text-primary">
                 <div className="flex items-center gap-4">
                   <Icon icon="material-symbols:help-outline" width={24} height={24} />
                   <span className="font-medium">{f.q}</span>

@@ -25,7 +25,8 @@ function Chatbot() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Open chat"
-        className="hidden lg:flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg"
+        className="hidden lg:flex h-12 w-12 items-center justify-center rounded-full shadow-lg 
+             bg-primary hover:bg-[#E0E2FF] text-white hover:text-black transition-colors duration-300"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.2-3.6A7.963 7.963 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -56,7 +57,8 @@ function Chatbot() {
                 placeholder="Ecrire un message..."
                 className="flex-1 rounded-md border px-2 py-1 text-sm"
               />
-              <button onClick={sendMessage} className="rounded-md bg-primary text-white px-3 py-1 text-sm">Envoyer</button>
+              <button onClick={sendMessage} className="rounded-md px-3 py-1 text-sm 
+               bg-primary text-white hover:bg-[#E0E2FF] hover:text-black transition-colors duration-300">Envoyer</button>
             </div>
           </div>
         </div>
@@ -100,9 +102,13 @@ export default function ScrollToTop() {
           <div
             onClick={scrollToTop}
             aria-label="scroll to top"
-            className="back-to-top flex h-10 w-10 cursor-pointer items-center justify-center rounded-md bg-primary text-white shadow-md transition duration-300 ease-in-out hover:bg-dark"
+            className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-md 
+             bg-primary text-white shadow-md transition-colors duration-300 ease-in-out 
+             hover:bg-[#E0E2FF]"
           >
-            <span className="mt-[6px] h-3 w-3 rotate-45 border-l border-t border-white"></span>
+            <span className="mt-[6px] h-3 w-3 rotate-45 border-l border-t border-white 
+                   transition-colors duration-300 ease-in-out 
+                   group-hover:border-black"></span>
           </div>
         )}
       </div>

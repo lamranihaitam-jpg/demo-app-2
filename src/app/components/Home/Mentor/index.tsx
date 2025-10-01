@@ -72,14 +72,17 @@ const Mentor = () => {
               ))
       : mentor.map((items, i) => (
         <div key={items.name ?? `mentor-${i}`}>
-                  <div className='m-3 py-14 mt-10 text-center rounded-2xl bg-white shadow-md'>
+                  <div className='m-3 py-14 mt-10 text-center rounded-2xl bg-white shadow-md border border-black/10
+transition-all duration-300 ease-in-out 
+hover:scale-105 hover:shadow-xl hover:border-primary hover:-translate-y-2'>
                     <div className='relative mb-10'>
                       <Image
                         src={items.imgSrc}
                         alt='user-image'
                         width={206}
                         height={206}
-                        className='inline-block m-auto rounded-full border border-black/10'
+                        className='inline-block m-auto rounded-full border border-black/10 
+                                  transition-transform duration-300 ease-in-out hover:scale-110'
                       />
                       <div className='absolute right-[22%] -bottom-[2%] bg-white rounded-full p-4'>
                         <Image

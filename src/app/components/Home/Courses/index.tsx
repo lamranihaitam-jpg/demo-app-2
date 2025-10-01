@@ -112,7 +112,7 @@ const Courses = () => {
               ))
       : course.map((items, i) => (
         <div key={items.heading ?? `course-${i}`}>
-                  <div className='bg-white m-3 px-3 pt-3 pb-12 shadow-md rounded-2xl h-full border border-black/10 capitalize'>
+                  <div className='bg-white border border-black/10 shadow-md rounded-2xl m-3 p-5 mt-20 relative transition-all duration-300 hover:shadow-xl hover:border-primary hover:-translate-y-2'>
                     <div className='relative rounded-3xl'>
                       <div className='rounded-2xl'>
                         <Image
@@ -120,7 +120,7 @@ const Courses = () => {
                           alt='course-image'
                           width={389}
                           height={262}
-                          className='w-full rounded-2xl'
+                          className='w-full rounded-2xl transition-transform duration-300 ease-in-out transform hover:scale-105'
                         />
                       </div>
                       <div className='absolute right-5 -bottom-3 bg-secondary rounded-full p-4'>

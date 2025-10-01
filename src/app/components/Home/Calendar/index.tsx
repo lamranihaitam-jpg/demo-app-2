@@ -43,11 +43,31 @@ const demoSessions = [
 ]
 
 const Calendar = () => {
+  const [sessions, setSessions] = useState<typeof demoSessions>(demoSessions)
   const [selectedSession, setSelectedSession] = useState<string | null>(demoSessions[0].id)
   const [selectedDate, setSelectedDate] = useState<string | null>(demoSessions[0].dates[0].date)
   const [selectedSlot, setSelectedSlot] = useState<string | null>(demoSessions[0].dates[0].slots[0])
 
-  const session = demoSessions.find((s) => s.id === selectedSession)!
+  // fetch live courses
+  React.useEffect(()=>{
+    let mounted = true
+    fetch('/api/courses').then(r=>r.json()).then(j=>{
+      if (!mounted) return
+      if (j && j.success && Array.isArray(j.data) && j.data.length>0){
+        // transform to demoSessions shape for display
+        const mapped = j.data.map((c:any)=>({ id: c.id, course: c.title, dates: c.sessions.map((s:any)=>({ date: s.startDate.slice(0,10), slots: s.slots.map((sl:any)=>sl.time) })) }))
+        setSessions(mapped)
+        setSelectedSession(mapped[0]?.id ?? null)
+        setSelectedDate(mapped[0]?.dates?.[0]?.date ?? null)
+        setSelectedSlot(mapped[0]?.dates?.[0]?.slots?.[0] ?? null)
+      }
+    }).catch(()=>{
+      // ignore and keep demoSessions
+    })
+    return ()=>{ mounted=false }
+  },[])
+
+  const session = sessions.find((s) => s.id === selectedSession)!
 
   const formatDate = (iso: string) => {
     // Expecting iso in YYYY-MM-DD, return DD/MM/YYYY for deterministic rendering
@@ -74,7 +94,11 @@ const Calendar = () => {
                       setSelectedDate(s.dates[0].date)
                       setSelectedSlot(s.dates[0].slots[0])
                     }}
-                    className={`w-full text-left p-2 rounded border ${s.id === selectedSession ? 'bg-midnight_text/10 border-midnight_text' : 'border-gray-200'}`}>
+                    className={`w-full text-left p-2 rounded-lg border shadow-sm transition-all duration-300
+  ${s.id === selectedSession
+    ? 'bg-[#E0E2FF]/25 shadow-lg border-primary -translate-y-1'
+    : 'border-black/10 hover:bg-[#E0E2FF]/25 hover:shadow-lg hover:border-primary hover:-translate-y-1'}`}>
+
                     {s.course}
                   </button>
                 </li>
@@ -119,7 +143,8 @@ const Calendar = () => {
                 {session.course} — {selectedDate} @ {selectedSlot}
               </p>
               <button
-                className='mt-4 inline-block bg-primary text-white px-4 py-2 rounded'
+                className='bg-primary text-white px-6 py-2 rounded-lg 
+             transition-transform duration-300 hover:scale-105 hover:shadow-lg'
                 onClick={() => alert(`Réservé: ${session.course} ${selectedDate} ${selectedSlot}`)}>
                 Réserver ce créneau
               </button>

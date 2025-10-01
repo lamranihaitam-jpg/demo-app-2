@@ -30,47 +30,47 @@ const ContactForm = () => {
     }))
   }
   const reset = () => {
-    formData.firstname = ''
-    formData.lastname = ''
-    formData.email = ''
-    formData.phnumber = ''
-    formData.motif = ''
-    formData.Message = ''
+    setFormData({
+      firstname: '',
+      lastname: '',
+      email: '',
+      phnumber: '',
+      motif: '',
+      Message: '',
+    })
   }
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     setLoader(true)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
 
-    fetch('https://formsubmit.co/ajax/bhainirav772@gmail.com', {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({
-        Name: formData.firstname,
-        LastName: formData.lastname,
-        Email: formData.email,
-        PhoneNo: formData.phnumber,
-        Motif: formData.motif, 
-        Message: formData.Message,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+      const contentType = res.headers.get('content-type') || ''
+      if (contentType.includes('application/json')) {
+        const data = await res.json()
         if (data.success) {
           setSubmitted(true)
           setShowThanks(true)
           reset()
-
-          setTimeout(() => {
-            setShowThanks(false)
-          }, 5000)
+          setTimeout(() => setShowThanks(false), 5000)
+        } else {
+          alert(data.message || "Une erreur s'est produite.")
         }
-
-        reset()
-      })
-      .catch((error) => {
-        setLoader(false)
-        console.log(error.message)
-      })
+      } else {
+        const text = await res.text()
+        console.error('Non-JSON response from /api/contact', res.status, text)
+        alert(`Erreur serveur: réponse inattendue. HTTP ${res.status}`)
+      }
+    } catch (error) {
+      console.error('Erreur frontend:', error)
+      alert('Erreur réseau ou serveur, voir console pour détails.')
+    } finally {
+      setLoader(false)
+    }
   }
   return (
   <section id='contact' className='bg-deep-slate scroll-mt-12'>
@@ -209,7 +209,7 @@ const ContactForm = () => {
           </div>
           {showThanks && (
             <div className='text-white bg-primary rounded-full px-4 text-lg mb-4.5 mt-1 absolute flex items-center gap-2'>
-              Thank you for contacting us! We will get back to you soon.
+              Merci de nous avoir contactés ! Nous vous répondrons dans les plus brefs délais.
               <div className='w-3 h-3 rounded-full animate-spin border-2 border-solid border-white border-t-transparent'></div>
             </div>
           )}

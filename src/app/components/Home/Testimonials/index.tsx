@@ -112,7 +112,7 @@ const Testimonial = () => {
         <div key={items.name ?? `testimonial-${i}`}>
                   <div
                     className={
-                      'bg-white border border-black/10 shadow-md rounded-2xl m-3 p-5 mt-20 relative'
+                      'bg-white border border-black/10 shadow-md rounded-2xl m-3 p-5 mt-20 relative transition-all duration-300 hover:shadow-xl hover:border-primary hover:-translate-y-2'
                     }>
                     <div className='absolute top-[-45px]'>
                       <Image

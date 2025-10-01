@@ -57,7 +57,9 @@ const Pricing = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {plans.map((plan) => (
-            <div key={plan.id} className="bg-white p-6 rounded-2xl shadow-md border border-black/10">
+            <div key={plan.id} className="bg-white p-6 rounded-2xl shadow-md border border-black/10 
+             transition-all duration-300 hover:shadow-xl hover:border-primary 
+             hover:-translate-y-2"> 
               <div className="flex items-center gap-4 mb-4">
                 <div className="bg-primary/10 text-primary rounded-full p-3">
                   <Icon icon={plan.icon} width={28} height={28} />
@@ -83,7 +85,8 @@ const Pricing = () => {
               </ul>
 
               <Link href="#" className="inline-block">
-                <button className="bg-primary text-white px-6 py-2 rounded-lg">Commencer</button>
+                <button className="bg-primary text-white px-6 py-2 rounded-lg 
+             transition-transform duration-300 hover:scale-105 hover:shadow-lg">Commencer</button>
               </Link>
             </div>
           ))}

@@ -151,9 +151,6 @@ const FooterLinkData: FooterLinkType[] = [
       { label: 'Affiliates', href: '/' },
     ],
   },
-
-  
-
 ]
 
 export const GET = () => {
