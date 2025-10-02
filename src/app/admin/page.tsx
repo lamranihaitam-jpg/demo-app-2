@@ -6,6 +6,27 @@ type Slot = { time: string; capacity?: number }
 type Session = { id?: string; startDate: string; endDate?: string; location?: string; slots: Slot[] }
 type CoursePayload = { title: string; description?: string; sessions: Session[] }
 
+// Demo data (same shape used by Calendar) - used as a fallback when Prisma/API isn't available
+const demoSessionsForAdmin = [
+  {
+    id: 's1',
+    title: 'Formation 1',
+    description: '',
+    sessions: [
+      { id: 's1-1', startDate: '2025-10-02', endDate: '2025-10-02', location: 'Paris', slots: [{ time: '09:00' }, { time: '14:00' }, { time: '16:30' }, { time: '18:00' }] },
+      { id: 's1-2', startDate: '2025-10-09', endDate: '2025-10-09', location: 'Lyon', slots: [{ time: '09:00' }, { time: '14:00' }] },
+    ],
+  },
+  {
+    id: 's2',
+    title: 'Formation 2',
+    description: '',
+    sessions: [
+      { id: 's2-1', startDate: '2025-10-20', endDate: '2025-10-20', location: '', slots: [{ time: '09:00' }, { time: '14:00' }, { time: '16:00' }, { time: '18:00' }] },
+    ],
+  },
+]
+
 export default function AdminPage() {
   // Auth
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -32,6 +53,7 @@ export default function AdminPage() {
   const [apiError, setApiError] = useState<string | null>(null)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
   const [courses, setCourses] = useState<any[]>([])
+  const [useDemoData, setUseDemoData] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const title = presetChoice === "Autre (personnalisée)" ? customTitle : presetChoice
 
@@ -73,9 +95,31 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/courses")
       const j = await res.json()
-      if (j && j.success && Array.isArray(j.data)) setCourses(j.data)
+      if (j && j.success && Array.isArray(j.data) && j.data.length>0){
+        // map API shape to admin-friendly shape (like Calendar)
+        const mapped = j.data.map((c:any) => ({
+          id: c.id,
+          title: c.title,
+          description: c.description,
+          sessions: Array.isArray(c.sessions) ? c.sessions.map((s:any) => ({
+            id: s.id,
+            startDate: s.startDate ? s.startDate.slice(0,10) : '',
+            endDate: s.endDate ? s.endDate.slice(0,10) : '',
+            location: s.location || '',
+            slots: Array.isArray(s.slots) ? s.slots.map((sl:any) => ({ time: sl.time, capacity: sl.capacity })) : [],
+          })) : [],
+        }))
+        setCourses(mapped)
+        return
+      }
+      // fallback: if API returned empty or no data, use demo data
+      if (!useDemoData) {
+        const mappedDemo = demoSessionsForAdmin
+        setCourses(mappedDemo)
+      }
     } catch (e) {
-      // ignore
+      // On fetch error, fall back to demo data so admin UI remains usable without Prisma
+      setCourses(demoSessionsForAdmin)
     }
   }
   useEffect(() => { fetchCourses() }, [])
@@ -184,19 +228,62 @@ export default function AdminPage() {
         <aside className="lg:col-span-1 bg-white p-4 rounded">
           <h3 className="font-semibold mb-3">Formations existantes</h3>
           <div className="space-y-3 max-h-[60vh] overflow-auto">
-            {courses.map(c=>(
-              <div key={c.id} className="flex items-center justify-between border rounded p-2">
-                <div>
-                  <div className="font-medium">{c.title}</div>
-                  <div className="text-sm text-gray-500">{(c.sessions?.length||0)} dates</div>
+            {courses.length === 0 && <p className="text-sm text-gray-500">Aucune formation</p>}
+            {courses.map((c) => (
+              <div key={c.id} className="border rounded p-3">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="font-medium">{c.title}</div>
+                    <div className="text-sm text-gray-500">{(c.sessions?.length || 0)} dates</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(c)}
+                      className="px-2 py-1 text-sm bg-yellow-200 rounded hover:brightness-95">
+                      Éditer
+                    </button>
+                    <button
+                      onClick={() => handleDelete(c.id)}
+                      className="px-2 py-1 text-sm bg-red-100 text-red-700 rounded hover:brightness-95">
+                      Suppr.
+                    </button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <button onClick={()=>handleEdit(c)} className="px-2 py-1 text-sm bg-yellow-200 rounded hover:brightness-95">Éditer</button>
-                  <button onClick={()=>handleDelete(c.id)} className="px-2 py-1 text-sm bg-red-100 text-red-700 rounded hover:brightness-95">Suppr.</button>
+
+                {/* résumé des prochaines dates + créneaux (style Calendar) */}
+                <div className="mt-2 text-sm text-gray-700">
+                  {Array.isArray(c.sessions) && c.sessions.length > 0 ? (
+                    <ul className="space-y-2">
+                      {c.sessions.slice(0, 3).map((s: any) => (
+                        <li key={s.id ?? s.startDate} className="flex flex-col">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium">
+                              {s.startDate ? (() => {
+                                const d = new Date(s.startDate)
+                                const dd = String(d.getDate()).padStart(2,'0')
+                                const mm = String(d.getMonth()+1).padStart(2,'0')
+                                const yy = d.getFullYear()
+                                return `${dd}/${mm}/${yy}`
+                              })() : s.startDate}
+                            </span>
+                            <span className="text-xs text-gray-500">{s.location ?? ''}</span>
+                          </div>
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {Array.isArray(s.slots) && s.slots.slice(0, 4).map((sl: any, i: number) => (
+                              <span key={i} className="text-xs px-2 py-1 rounded border bg-gray-50">
+                                {sl.time}
+                              </span>
+                            ))}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-sm text-gray-500">Aucune date</div>
+                  )}
                 </div>
               </div>
             ))}
-            {courses.length===0 && <p className="text-sm text-gray-500">Aucune formation</p>}
           </div>
         </aside>
 
