@@ -95,9 +95,9 @@ const Calendar = () => {
                       setSelectedSlot(s.dates[0].slots[0])
                     }}
                     className={`w-full text-left p-2 rounded-lg border shadow-sm transition-all duration-300
-  ${s.id === selectedSession
-    ? 'bg-[#E0E2FF]/25 shadow-lg border-primary -translate-y-1'
-    : 'border-black/10 hover:bg-[#E0E2FF]/25 hover:shadow-lg hover:border-primary hover:-translate-y-1'}`}>
+                                ${s.id === selectedSession
+                                ? 'bg-[#E0E2FF]/25 shadow-lg border-primary -translate-y-1'
+                                : 'border-black/10 hover:bg-[#E0E2FF]/25 hover:shadow-lg hover:border-primary hover:-translate-y-1'}`}>
 
                     {s.course}
                   </button>
@@ -116,12 +116,16 @@ const Calendar = () => {
                       setSelectedDate(d.date)
                       setSelectedSlot(d.slots[0])
                     }}
-                    className={`w-full text-left p-2 rounded border ${d.date === selectedDate ? 'bg-midnight_text/10 border-midnight_text' : 'border-gray-200'}`}>
+                    className={`w-full text-left p-2 rounded-lg border shadow-sm transition-all duration-300
+                              ${d.date === selectedDate
+                              ? 'bg-[#E0E2FF]/25 shadow-lg border-primary -translate-y-1'
+                              : 'border-black/10 hover:bg-[#E0E2FF]/25 hover:shadow-lg hover:border-primary hover:-translate-y-1'}`}>
+                   
                     {formatDate(d.date)}
                   </button>
                 </li>
               ))}
-            </ul>
+            </ul> 
           </div>
 
           <div>
@@ -131,7 +135,11 @@ const Calendar = () => {
                 <button
                   key={slot}
                   onClick={() => setSelectedSlot(slot)}
-                  className={`px-3 py-2 rounded border ${slot === selectedSlot ? 'bg-midnight_text/10 border-midnight_text' : 'border-gray-200'}`}>
+                  className={`px-3 py-2 rounded border shadow-sm transition-all duration-300
+                              ${slot === selectedSlot
+                              ? 'bg-[#E0E2FF]/25 shadow-lg border-primary -translate-y-1'
+                              : 'border-black/10 hover:bg-[#E0E2FF]/25 hover:shadow-lg hover:border-primary hover:-translate-y-1'}`}>
+                   
                   {slot}
                 </button>
               ))}

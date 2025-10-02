@@ -97,6 +97,15 @@ const Footer = () => {
                   +33 5 12 34 56 78
                 </p>
               </Link>
+              <div className='flex item-center'>
+                <Icon
+                  icon='solar:clock-circle-bold'
+                  className='text-primary text-3xl lg:text-2xl inline-block me-2'
+                />
+                <p className='text-black/60 hover:text-primary text-base'>
+                  Lundi - Vendredi, 09:00 - 18:00 
+                </p>
+              </div>
               <Link href='/' className='flex items-center w-fit'>
                 <Icon
                   icon='solar:mailbox-bold'
@@ -106,6 +115,19 @@ const Footer = () => {
                   info@groupeestformation.com
                 </p>
               </Link>
+              {/* Google Map 
+              <div className='mt-4'>
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.9999999999995!2d7.750000000000001!3d48.58392000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4796c8e77f000001%3A0x123456789abcdef!2s25%20Rue%20de%20la%20Paix%2C%2067000%20Strasbourg!5e0!3m2!1sen!2sfr!4v1696250000000!5m2!1sen!2sfr"
+                  width="100%"
+                  height="200"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+              */}
             </div>
           </div>
         </div>
