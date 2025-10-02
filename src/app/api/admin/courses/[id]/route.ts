@@ -16,12 +16,10 @@ function getPrisma() {
   }
 }
 
-// ✅ Contexte typé pour App Router
-type RouteContext = {
-  params: { id: string }
-}
-
-export async function DELETE(request: NextRequest, context: RouteContext) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const adminToken = process.env.ADMIN_TOKEN
     const provided = request.headers.get('x-admin-token') || ''
@@ -32,7 +30,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       )
     }
 
-    const id = context.params.id
+    const id = params.id
     const prisma = getPrisma()
     await prisma.course.delete({ where: { id } })
     return NextResponse.json({ success: true })
@@ -59,7 +57,10 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
   }
 }
 
-export async function PATCH(request: NextRequest, context: RouteContext) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const adminToken = process.env.ADMIN_TOKEN
     const provided = request.headers.get('x-admin-token') || ''
@@ -70,7 +71,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       )
     }
 
-    const id = context.params.id
+    const id = params.id
     const body = await request.json()
     const { title, description, image, sessions } = body
     if (!title) {
