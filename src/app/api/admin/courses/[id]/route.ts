@@ -16,10 +16,12 @@ function getPrisma() {
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+// ✅ Contexte typé pour App Router
+type RouteContext = {
+  params: { id: string }
+}
+
+export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
     const adminToken = process.env.ADMIN_TOKEN
     const provided = request.headers.get('x-admin-token') || ''
@@ -57,10 +59,7 @@ export async function DELETE(
   }
 }
 
-export async function PATCH(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, context: RouteContext) {
   try {
     const adminToken = process.env.ADMIN_TOKEN
     const provided = request.headers.get('x-admin-token') || ''
